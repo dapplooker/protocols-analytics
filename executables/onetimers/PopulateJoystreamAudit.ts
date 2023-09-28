@@ -1,11 +1,10 @@
-import JoystreamAuditService from '../../joystream/JoystreamAuditService';
-import Logger from "../../lib/Logger";
+const JoystreamAuditService = require('../../joystream/JoystreamAuditService');
 
 // Note: This onetimer is specific to joystream
-async function populate(): Promise<void> {
+async function populate() {
   await new JoystreamAuditService().servicePerform();
 }
 
 populate().then(() => {
-  Logger.info("DONE");
+  console.info("DONE");
 });

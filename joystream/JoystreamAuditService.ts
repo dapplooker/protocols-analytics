@@ -1,13 +1,7 @@
-import GraphClient from "../../../lib/dataStores/source/graph-protocol/GraphClient";
-import GraphFetcher from "../lib/dataStores/source/graph-protocol/GraphFetcher";
+import fetch from "node-fetch"
 import JoystreamConstants from "../lib/globalConstant/JoystreamConstants";
-import Logger from "../lib/Logger";
 
 export default class JoystreamAuditService {
-    private graphClient: GraphClient;
-
-    private graphFetcher: GraphFetcher;
-
     private joystreamGraphQlEndpoint: string;
 
     private totalChannels: number;
@@ -19,8 +13,6 @@ export default class JoystreamAuditService {
     public constructor() {
         const oThis = this;
         oThis.joystreamGraphQlEndpoint = JoystreamConstants.joystreamGraphQLEndpoint;
-        oThis.graphClient = GraphClient.getClient(oThis.joystreamGraphQlEndpoint);
-        oThis.graphFetcher = new GraphFetcher(oThis.graphClient, oThis.joystreamGraphQlEndpoint);
         oThis.totalChannels = 0;
         oThis.totalVideos = 0;
         oThis.totalMembers = 0;
@@ -51,19 +43,33 @@ export default class JoystreamAuditService {
                 limit,
                 offset,
             }
-            const query = oThis.queryForTotalChannels(variables);
+
+            const requestBody = {
+                query: oThis.queryForTotalChannels(variables),
+                variables: variables
+            };
+
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'User-Agent': 'Node'
+                },
+                body: JSON.stringify(requestBody)
+            };
             try {
-                Logger.info(`Running query ${query}  variable : ${JSON.stringify(variables)}`);
-                const queryResponse = await this.graphClient.query(query, variables);
-                result = queryResponse.data['channels'] || [];
+                console.log(`Running query ${JSON.stringify(requestBody)}  variable : ${JSON.stringify(variables)}`);
+                const queryResponse = await fetch(oThis.joystreamGraphQlEndpoint, requestOptions)
+                // Access the 'data' property from the parsed response
+                result = queryResponse["data"]["channels"] || [];
                 resultLength += result.length;
             } catch (e) {
-                Logger.error(`JoystreamAuditService::fetch::Error fetching: ${query} , variables: ${JSON.stringify(variables)}, Error: ${e.message}`);
+                console.log(`JoystreamAuditService::fetch::Error fetching: ${JSON.stringify(requestBody)} , variables: ${JSON.stringify(variables)}, Error: ${e.message}`);
             }
 
             //Need to verify
-            if(result.length < limit) {
-                Logger.info(`JoystreamAuditService::fetchTotalChannelsLength::Reached at the end of block:: ${offset}`);
+            if (result.length < limit) {
+                console.log(`JoystreamAuditService::fetchTotalChannelsLength::Reached at the end of block:: ${offset}`);
                 break;
             }
             offset += limit;
@@ -83,19 +89,33 @@ export default class JoystreamAuditService {
                 limit,
                 offset,
             }
-            const query = oThis.queryForTotalMemberships(variables);
+
+            const requestBody = {
+                query: oThis.queryForTotalMemberships(variables),
+                variables: variables
+            };
+
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'User-Agent': 'Node'
+                },
+                body: JSON.stringify(requestBody)
+            };
             try {
-                Logger.info(`Running query ${query}  variable : ${JSON.stringify(variables)}`);
-                const queryResponse = await this.graphClient.query(query, variables);
-                result = queryResponse.data['memberships'] || [];
+                console.log(`Running query ${JSON.stringify(requestBody)}  variable : ${JSON.stringify(variables)}`);
+                const queryResponse = await fetch(oThis.joystreamGraphQlEndpoint, requestOptions)
+                // Access the 'data' property from the parsed response
+                result = queryResponse["data"]["memberships"] || [];
                 resultLength += result.length;
             } catch (e) {
-                Logger.error(`JoystreamAuditService::fetch::Error fetching: ${query} , variables: ${JSON.stringify(variables)}, Error: ${e.message}`);
+                console.log(`JoystreamAuditService::fetch::Error fetching: ${JSON.stringify(requestBody)} , variables: ${JSON.stringify(variables)}, Error: ${e.message}`);
             }
 
             //Need to verify
-            if(result.length < limit) {
-                Logger.info(`JoystreamAuditService::fetchTotalMembersLength::Reached at the end of block:: ${offset}`);
+            if (result.length < limit) {
+                console.log(`JoystreamAuditService::fetchTotalMembersLength::Reached at the end of block:: ${offset}`);
                 break;
             }
             offset += limit;
@@ -115,19 +135,33 @@ export default class JoystreamAuditService {
                 limit,
                 offset,
             }
-            const query = oThis.queryForTotalVideosCreated(variables);
+
+            const requestBody = {
+                query: oThis.queryForTotalVideosCreated(variables),
+                variables: variables
+            };
+
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'User-Agent': 'Node'
+                },
+                body: JSON.stringify(requestBody)
+            };
             try {
-                Logger.info(`Running query ${query}  variable : ${JSON.stringify(variables)}`);
-                const queryResponse = await this.graphClient.query(query, variables);
-                result = queryResponse.data['videos'] || [];
+                console.log(`Running query ${JSON.stringify(requestBody)}  variable : ${JSON.stringify(variables)}`);
+                const queryResponse = await fetch(oThis.joystreamGraphQlEndpoint, requestOptions)
+                // Access the 'data' property from the parsed response
+                result = queryResponse["data"]["videos"] || [];
                 resultLength += result.length;
             } catch (e) {
-                Logger.error(`JoystreamAuditService::fetch::Error fetching: ${query} , variables: ${JSON.stringify(variables)}, Error: ${e.message}`);
+                console.log(`JoystreamAuditService::fetch::Error fetching: ${JSON.stringify(requestBody)} , variables: ${JSON.stringify(variables)}, Error: ${e.message}`);
             }
 
             //Need to verify
-            if(result.length < limit) {
-                Logger.info(`JoystreamAuditService::fetchTotalVideosLength::Reached at the end of block:: ${offset}`);
+            if (result.length < limit) {
+                console.log(`JoystreamAuditService::fetchTotalVideosLength::Reached at the end of block:: ${offset}`);
                 break;
             }
             offset += limit;
@@ -135,7 +169,7 @@ export default class JoystreamAuditService {
         oThis.totalVideos = resultLength;
     }
 
-    private queryForTotalChannels(variables: {limit: number, offset: number}) {
+    private queryForTotalChannels(variables: { limit: number, offset: number }) {
         const templateQuery = `
         query {
             channels(where: { totalVideosCreated_gt: 0 } limit: ${variables.limit} offset: ${variables.offset}) { 
@@ -147,7 +181,7 @@ export default class JoystreamAuditService {
         return templateQuery;
     }
 
-    private queryForTotalVideosCreated(variables: {limit: number, offset: number}) {
+    private queryForTotalVideosCreated(variables: { limit: number, offset: number }) {
         const templateQuery = `
         query {
             videos(limit: ${variables.limit} offset: ${variables.offset}) { 
@@ -158,7 +192,7 @@ export default class JoystreamAuditService {
         return templateQuery;
     }
 
-    private queryForTotalMemberships(variables: {limit: number, offset: number}) {
+    private queryForTotalMemberships(variables: { limit: number, offset: number }) {
         const templateQuery = `
         query {
             memberships(limit: ${variables.limit} offset: ${variables.offset}) { 

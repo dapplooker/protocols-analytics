@@ -1,0 +1,16 @@
+{
+    "name": "Protocol-Analytics",
+    "version": "0.0.1",
+    "description": "This repository pulls dapp events and transactions to different data stores.",
+    "main": "index.js",
+    "scripts": {
+        "build": "rm -rf dist",
+        "onetimer:populateJoystreamAudit": "node executables/onetimers/PopulateJoystreamAudit.ts"
+    },
+    "dependencies": {
+        "node-fetch": "^3.3.2"
+    },
+    "devDependencies": {
+        "@types/node": "^20.7.1"
+    }
+}
