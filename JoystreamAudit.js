@@ -7,7 +7,7 @@ let totalMembers = 0;
 let totalVideos = 0;
 
 async function fetchTotalChannelsLength() {
-    let limit = 1000;
+    let limit = 10000;
     let offset = 0;
     let result = [];
     let resultLength = 0;
@@ -38,7 +38,7 @@ async function fetchTotalChannelsLength() {
                 joystreamGraphQlEndpoint,
                 requestOptions
             );
-            const response = queryResponse.json();
+            const response = await queryResponse.json();
             // Access the 'data' property from the parsed response
             result = response["data"]["channels"] || [];
             resultLength += result.length;
@@ -59,7 +59,7 @@ async function fetchTotalChannelsLength() {
 }
 
 async function fetchTotalMembersLength() {
-    let limit = 2000;
+    let limit = 10000;
     let offset = 0;
     let result = [];
     let resultLength = 0;
@@ -90,7 +90,7 @@ async function fetchTotalMembersLength() {
                 joystreamGraphQlEndpoint,
                 requestOptions
             );
-            const response = queryResponse.json();
+            const response = await queryResponse.json();
             // Access the 'data' property from the parsed response
             result = response["data"]["memberships"] || [];
             resultLength += result.length;
@@ -142,7 +142,7 @@ async function fetchTotalVideosLength() {
                 joystreamGraphQlEndpoint,
                 requestOptions
             );
-            const response = queryResponse.json();
+            const response = await queryResponse.json();
             // Access the 'data' property from the parsed response
             result = response["data"]["videos"] || [];
             resultLength += result.length;
@@ -162,9 +162,6 @@ async function fetchTotalVideosLength() {
         offset += limit;
     }
     totalVideos = resultLength;
-}
-
-async function response() {
     console.log(`TotalChannels: ${totalChannels}`);
     console.log(`TotalVideos: ${totalVideos}`);
     console.log(`TotalMembers: ${totalMembers}`);
@@ -207,4 +204,3 @@ function queryForTotalMemberships(variables) {
 fetchTotalChannelsLength()
 fetchTotalMembersLength()
 fetchTotalVideosLength()
-response()
