@@ -33,7 +33,7 @@ async function fetchTotalChannelsLength() {
             body: requestBody,
         };
         try {
-            console.log(`Running query ${requestBody}`);
+            console.log(`JoystreamAuditService::Running query ${JSON.stringify(requestBody)}`);
             const queryResponse = await fetch(
                 joystreamGraphQlEndpoint,
                 requestOptions
@@ -84,7 +84,7 @@ async function fetchTotalMembersLength() {
             body: requestBody,
         };
         try {
-            console.log(`Running query ${requestBody}`);
+            console.log(`JoystreamAuditService::Running query ${JSON.stringify(requestBody)}`);
             const queryResponse = await fetch(
                 joystreamGraphQlEndpoint,
                 requestOptions
@@ -135,7 +135,7 @@ async function fetchTotalVideosLength() {
             body: requestBody,
         };
         try {
-            console.log(`Running query ${requestBody}`);
+            console.log(`JoystreamAuditService::Running query ${JSON.stringify(requestBody)}`);
             const queryResponse = await fetch(
                 joystreamGraphQlEndpoint,
                 requestOptions
@@ -164,6 +164,7 @@ async function fetchTotalVideosLength() {
     console.log(`TotalMembers: ${totalMembers}`);
 }
 
+// query for total channels
 function queryForTotalChannels(variables) {
     const templateQuery = `
         query {
@@ -176,6 +177,7 @@ function queryForTotalChannels(variables) {
     return templateQuery;
 }
 
+// query for total videos
 function queryForTotalVideosCreated(variables) {
     const templateQuery = `
         query {
@@ -187,6 +189,7 @@ function queryForTotalVideosCreated(variables) {
     return templateQuery;
 }
 
+// query for total members
 function queryForTotalMemberships(variables) {
     const templateQuery = `
         query {
