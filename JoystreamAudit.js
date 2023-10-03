@@ -46,7 +46,6 @@ async function fetchTotalChannelsLength() {
             `JoystreamAuditService::fetch::Error fetching: ${requestBody} , variables: ${JSON.stringify(variables)}, Error: ${e.message}`
         }
 
-        //Need to verify
         if (result.length < limit) {
             console.log(
                 `JoystreamAuditService::fetchTotalChannelsLength::Reached at the end of block:: ${offset}`
@@ -98,7 +97,6 @@ async function fetchTotalMembersLength() {
             `JoystreamAuditService::fetch::Error fetching: ${requestBody} , variables: ${JSON.stringify(variables)}, Error: ${e.message}`
         }
 
-        //Need to verify
         if (result.length < limit) {
             console.log(
                 `JoystreamAuditService::fetchTotalMembersLength::Reached at the end of block:: ${offset}`
@@ -151,8 +149,7 @@ async function fetchTotalVideosLength() {
                 `JoystreamAuditService::fetch::Error fetching: ${requestBody} , variables: ${JSON.stringify(variables)}, Error: ${e.message}`
             );
         }
-
-        //Need to verify
+        
         if (result.length < limit) {
             console.log(
                 `JoystreamAuditService::fetchTotalVideosLength::Reached at the end of block:: ${offset}`
