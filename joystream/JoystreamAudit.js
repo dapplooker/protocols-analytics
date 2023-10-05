@@ -133,6 +133,9 @@ async function fetchTotalVideosLength() {
         offset += limit;
     }
     totalVideos = resultLength;
+}
+
+async function results() {
     console.log(`TotalChannels: ${totalChannels}`);
     console.log(`TotalVideos: ${totalVideos}`);
     console.log(`TotalMembers: ${totalMembers}`);
@@ -175,6 +178,15 @@ function queryForTotalMemberships(variables) {
     return templateQuery;
 }
 
-fetchTotalChannelsLength()
-fetchTotalMembersLength()
-fetchTotalVideosLength()
+(async () => {
+    await fetchTotalChannelsLength();
+    console.log("Done fetching total channels");
+
+    await fetchTotalMembersLength();
+    console.log("Done fetching total members");
+
+    await fetchTotalVideosLength();
+    console.log("Done fetching total videos");
+
+    await results();
+})();
