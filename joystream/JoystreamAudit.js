@@ -6,6 +6,36 @@ let totalChannels = 0;
 let totalMembers = 0;
 let totalVideos = 0;
 
+//fetch data
+async function fetchData(requestBody, dataKey) {
+    let result = [];
+    try {
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                'Content-Length': requestBody.length,
+                "User-Agent": "Node",
+            },
+            body: requestBody,
+        };
+        console.log(`JoystreamAuditService::Running query ${JSON.stringify(requestBody)}`);
+        const queryResponse = await fetch(
+            joystreamGraphQlEndpoint,
+            requestOptions
+        );
+        const response = await queryResponse.json();
+        // Access the 'data' property from the parsed response
+        result = response["data"][dataKey] || [];
+    } catch (e) {
+        console.log(
+            `JoystreamAuditService::fetch::Error fetching: ${requestBody} , Error: ${e.message}`
+        );
+    }
+
+    return result || [];
+}
+
 async function fetchTotalChannelsLength() {
     let limit = 10000;
     let offset = 0;
@@ -23,32 +53,14 @@ async function fetchTotalChannelsLength() {
             variables: variables,
         });
 
-        const requestOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                'Content-Length': requestBody.length,
-                "User-Agent": "Node",
-            },
-            body: requestBody,
-        };
-        try {
-            console.log(`JoystreamAuditService::Running query ${JSON.stringify(requestBody)}`);
-            const queryResponse = await fetch(
-                joystreamGraphQlEndpoint,
-                requestOptions
-            );
-            const response = await queryResponse.json();
-            // Access the 'data' property from the parsed response
-            result = response["data"]["channels"] || [];
-            resultLength += result.length;
-        } catch (e) {
-            `JoystreamAuditService::fetch::Error fetching: ${requestBody} , variables: ${JSON.stringify(variables)}, Error: ${e.message}`
-        }
+        const dataKey = "channels";
+        result = await fetchData(requestBody, dataKey);
 
+        resultLength += result.length;
+        
         if (result.length < limit) {
             console.log(
-                `JoystreamAuditService::fetchTotalChannelsLength::Reached at the end of block:: ${offset}`
+                `JoystreamAuditService::fetchTotalVideosLength::Reached at the end of block:: ${offset}`
             );
             break;
         }
@@ -74,32 +86,14 @@ async function fetchTotalMembersLength() {
             variables: variables,
         });
 
-        const requestOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                'Content-Length': requestBody.length,
-                "User-Agent": "Node",
-            },
-            body: requestBody,
-        };
-        try {
-            console.log(`JoystreamAuditService::Running query ${JSON.stringify(requestBody)}`);
-            const queryResponse = await fetch(
-                joystreamGraphQlEndpoint,
-                requestOptions
-            );
-            const response = await queryResponse.json();
-            // Access the 'data' property from the parsed response
-            result = response["data"]["memberships"] || [];
-            resultLength += result.length;
-        } catch (e) {
-            `JoystreamAuditService::fetch::Error fetching: ${requestBody} , variables: ${JSON.stringify(variables)}, Error: ${e.message}`
-        }
+        const dataKey = "memberships";
+        result = await fetchData(requestBody, dataKey);
 
+        resultLength += result.length;
+        
         if (result.length < limit) {
             console.log(
-                `JoystreamAuditService::fetchTotalMembersLength::Reached at the end of block:: ${offset}`
+                `JoystreamAuditService::fetchTotalVideosLength::Reached at the end of block:: ${offset}`
             );
             break;
         }
@@ -125,30 +119,10 @@ async function fetchTotalVideosLength() {
             variables: variables,
         });
 
-        const requestOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                'Content-Length': requestBody.length,
-                "User-Agent": "Node",
-            },
-            body: requestBody,
-        };
-        try {
-            console.log(`JoystreamAuditService::Running query ${JSON.stringify(requestBody)}`);
-            const queryResponse = await fetch(
-                joystreamGraphQlEndpoint,
-                requestOptions
-            );
-            const response = await queryResponse.json();
-            // Access the 'data' property from the parsed response
-            result = response["data"]["videos"] || [];
-            resultLength += result.length;
-        } catch (e) {
-            console.log(
-                `JoystreamAuditService::fetch::Error fetching: ${requestBody} , variables: ${JSON.stringify(variables)}, Error: ${e.message}`
-            );
-        }
+        const dataKey = "videos";
+        result = await fetchData(requestBody, dataKey);
+
+        resultLength += result.length;
         
         if (result.length < limit) {
             console.log(
